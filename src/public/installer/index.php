@@ -1,33 +1,39 @@
+<?php
+    $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+    $cssUrl = $actual_link .'/'. 'CSS/style.css';
+    $logo =  $actual_link .'/'. 'Images/logo.svg';
+    $jsURL = $actual_link .'/'. 'js/script.js';
+?>
+<!DOCTYPE html>
 <html>
-
-    <?php
-        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-
-        $cssUrl = $actual_link .'/'. 'CSS/style.css';
-        $logo =  $actual_link .'/'. 'Images/logo.svg';
-        $leftIcon = $actual_link .'/'. 'Images/left-side.svg';
-        $rightIcon = $actual_link .'/'. 'Images/right-side.svg';
-    ?>
-
     <head>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,500">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
         <title>Bagisto Installer</title>
+
         <link rel="icon" sizes="16x16" href="Images/favicon.ico">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,500">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
         <link rel="stylesheet" type="text/css" href= "<?php echo $cssUrl; ?> ">
     </head>
 
     <body>
-
-        <div class="container requirement">
-            <div class="initial-display" style="padding-top: 100px;">
+        <div class="container">
+            <div class="initial-display">
                 <img class="logo" src= "<?php echo $logo; ?>" >
-            </div>
-
-            <div class="footer">
-                <img class="left-patern"  src= "<?php echo $leftIcon; ?>" >
-                <img class="right-patern"  src= "<?php echo $rightIcon; ?>" >
             </div>
         </div>
 
@@ -46,7 +52,7 @@
 
                 // reading env content
                 $data = file($envFile);
-                $databaseArray = ['DB_HOST', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'DB_CONNECTION','DB_PORT'];
+                $databaseArray = ['DB_HOST', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD', 'DB_CONNECTION','DB_PORT', 'DB_PREFIX'];
                 $key = $value = [];
 
                 if ($data) {
@@ -89,7 +95,8 @@
 
                     if (!$conn->connect_error) {
                         // retrieving admin entry
-                        $sql = "SELECT id, name FROM admins";
+                        $prefix = $databaseData['DB_PREFIX'].'admins';
+                        $sql = "SELECT id, name FROM $prefix";
                         $result = $conn->query($sql);
 
                         if ($result) {
@@ -109,14 +116,11 @@
                 include __DIR__ . '/Classes/Requirement.php';
 
                 // including php files
-                include __DIR__ . '/Environment.php';
-                include __DIR__ . '/Migration.php';
-                include __DIR__ . '/Admin.php';
-                include __DIR__ . '/Email.php';
-                include __DIR__ . '/Finish.php';
-
-                // including js
-                include __DIR__ . '/JS/script';
+                include __DIR__ . '/Views/environment.blade.php';
+                include __DIR__ . '/Views/migration.blade.php';
+                include __DIR__ . '/Views/admin.blade.php';
+                include __DIR__ . '/Views/email.blade.php';
+                include __DIR__ . '/Views/finish.blade.php';
 
                 // object creation
                 $requirement = new Requirement();
@@ -136,5 +140,11 @@
             }
         ?>
 
+        <div style="margin-bottom: 5px; margin-top: 30px; text-align: center;">
+            <a href="https://bagisto.com/" target="_blank">Bagisto</a> a community project by <a href="https://webkul.com/" target="_blank">Webkul</a>
+        </div>
+
+        <script src="<?php echo $jsURL; ?>" ></script>
+        
     </body>
 </html>

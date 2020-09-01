@@ -66,11 +66,6 @@
 
 
 
-## **v0.1.9-BETA1 (18th of December, 2019)** - *Release*
-
-* [feature] - Rvamp cart rules and catalog rules entirely
-
-
 ## **v0.1.8 (4th of October, 2019)** - *Release*
 
 * [feature] - Refund is added for orders.

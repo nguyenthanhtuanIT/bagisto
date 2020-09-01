@@ -94,7 +94,7 @@
 
             @if ($field['type'] == 'text')
 
-                <input type="text" v-validate="'{{ $validations }}'" class="control" id="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" name="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" value="{{ old($name) ?: core()->getConfigData($name) }}" data-vv-as="&quot;{{ trans($field['title']) }}&quot;">
+                <input type="text" v-validate="'{{ $validations }}'" class="control" id="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" name="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" value="{{ old($name) ?: (core()->getConfigData($name) ? core()->getConfigData($name) : (isset($field['default_value']) ? $field['default_value'] : '')) }}" data-vv-as="&quot;{{ trans($field['title']) }}&quot;">
 
             @elseif ($field['type'] == 'password')
 
@@ -178,7 +178,7 @@
                             ?>
 
                             <option value="{{ $value }}" {{ in_array($option['value'], explode(',', $selectedOption)) ? 'selected' : ''}}>
-                                {{ $option['title'] }}
+                                {{ trans($option['title']) }}
                             </option>
                         @endforeach
                     @endif
@@ -211,21 +211,13 @@
 
             @elseif ($field['type'] == 'boolean')
 
-                <select v-validate="'{{ $validations }}'" class="control" id="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" name="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" data-vv-as="&quot;{{ trans($field['title']) }}&quot;">
+                <?php $selectedOption = core()->getConfigData($name) ?? ''; ?>
 
-                    <?php
-                        $selectedOption = core()->getConfigData($name) ?? '';
-                    ?>
-
-                    <option value="0" {{ $selectedOption ? '' : 'selected'}}>
-                        {{ __('admin::app.configuration.no') }}
-                    </option>
-
-                    <option value="1" {{ $selectedOption ? 'selected' : ''}}>
-                        {{ __('admin::app.configuration.yes') }}
-                    </option>
-
-                </select>
+                <label class="switch">
+                    <input type="hidden" name="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" value="0" />
+                    <input type="checkbox" id="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" name="{{ $firstField }}[{{ $secondField }}][{{ $thirdField }}][{{ $field['name'] }}]" value="1" {{ $selectedOption ? 'checked' : '' }}>
+                    <span class="slider round"></span>
+                </label>
 
             @elseif ($field['type'] == 'image')
 
@@ -300,6 +292,8 @@
     @endif
 
 @push('scripts')
+
+<?php if ($field['type'] == 'country'): ?>
 
 <script type="text/x-template" id="country-template">
 
@@ -404,6 +398,8 @@
     });
 </script>
 
+<?php endif; ?>
+
 <script type="text/x-template" id="depends-template">
 
     <div class="control-group"  :class="[errors.has(name) ? 'has-error' : '']" v-if="this.isVisible">
@@ -412,12 +408,12 @@
             <span class="locale"> [@{{ channel_locale }}] </span>
         </label>
 
-        <select v-if="this.options.length" v-validate= "validations" class="control" :id = "name" :name = "name" v-model="this.result"
+        <select v-if="this.options.length" v-validate= "validations" class="control" :id = "name" :name = "name" v-model="savedValue"
         :data-vv-as="field_name">
             <option v-for='(option, index) in this.options' :value="option.value"> @{{ option.title }} </option>
         </select>
 
-        <input v-else type="text"  class="control" v-validate= "validations" :id = "name" :name = "name" v-model="this.result"
+        <input v-else type="text"  class="control" v-validate= "validations" :id = "name" :name = "name" v-model="savedValue"
         :data-vv-as="field_name">
 
         <span class="control-error" v-if="errors.has(name)">
@@ -440,11 +436,14 @@
             return {
                 isRequire: false,
                 isVisible: false,
+                savedValue: "",
             }
         },
 
         mounted: function () {
             var this_this = this;
+
+            this_this.savedValue = this_this.result;
 
             if (this_this.validations || (this_this.validations.indexOf("required") != -1)) {
                 this_this.isRequire = true;

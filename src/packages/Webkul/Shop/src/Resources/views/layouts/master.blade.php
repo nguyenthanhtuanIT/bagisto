@@ -74,13 +74,15 @@
             <div class="footer">
                 <p style="text-align: center;">
                     @if (core()->getConfigData('general.content.footer.footer_content'))
-                        {!! core()->getConfigData('general.content.footer.footer_content') !!}
+                        {{ core()->getConfigData('general.content.footer.footer_content') }}
                     @else
                         {!! trans('admin::app.footer.copy-right') !!}
                     @endif
                 </p>
             </div>
         @endif
+
+        <overlay-loader :is-open="show_loader"></overlay-loader>
     </div>
 
     <script type="text/javascript">

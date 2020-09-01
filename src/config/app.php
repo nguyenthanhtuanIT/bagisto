@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Admin URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL suffix is used to define the admin url for example
+    | admin/ or backend/
+    |
+    */
+
+    'admin_url' => env('APP_ADMIN_URL', 'admin'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
@@ -65,7 +77,7 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Kolkata',
+    'timezone' => env('APP_TIMEZONE','Asia/Kolkata'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +90,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -95,6 +107,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default Country
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default country by country code.
+    | Ensure it is uppercase and reflects the 'code' column of the
+    | countries table.
+    |
+    | for example: DE EN FR
+    | (use capital letters!)
+    */
+
+    'default_country' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Base Currency Code
     |--------------------------------------------------------------------------
     |
@@ -102,7 +129,7 @@ return [
     |
     */
 
-    'currency' => 'USD',
+    'currency' => env('APP_CURRENCY', 'USD'),
 
     /*
     |--------------------------------------------------------------------------
@@ -138,7 +165,7 @@ return [
     /*
         Application Version
     */
-    'version' => env('APP_VERSION', '0.1.6'),
+    'version' => env('APP_VERSION'),
 
     /**
      * Blacklisting attributes while debugging
@@ -219,11 +246,14 @@ return [
         //Laravel Maatwebsite
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
+        Barryvdh\Debugbar\ServiceProvider::class,
+
         //Repository
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Konekt\Concord\ConcordServiceProvider::class,
         Flynsarmy\DbBladeCompiler\DbBladeCompilerServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         //Webkul packages
         Webkul\Theme\Providers\ThemeServiceProvider::class,
@@ -233,6 +263,7 @@ return [
         Webkul\Category\Providers\CategoryServiceProvider::class,
         Webkul\Attribute\Providers\AttributeServiceProvider::class,
         Webkul\Core\Providers\CoreServiceProvider::class,
+        Webkul\Core\Providers\EnvValidatorServiceProvider::class,
         Webkul\Shop\Providers\ShopServiceProvider::class,
         Webkul\Customer\Providers\CustomerServiceProvider::class,
         Webkul\Inventory\Providers\InventoryServiceProvider::class,
@@ -244,10 +275,16 @@ return [
         Webkul\Sales\Providers\SalesServiceProvider::class,
         Webkul\Tax\Providers\TaxServiceProvider::class,
         Webkul\API\Providers\APIServiceProvider::class,
-        Webkul\Rule\Providers\RuleServiceProvider::class,
-        Webkul\CartRule\Providers\CartRuleServiceProvider::class,
         Webkul\CatalogRule\Providers\CatalogRuleServiceProvider::class,
-        Webkul\CMS\Providers\CMSServiceProvider::class
+        Webkul\CartRule\Providers\CartRuleServiceProvider::class,
+        Webkul\Rule\Providers\RuleServiceProvider::class,
+        Webkul\CMS\Providers\CMSServiceProvider::class,
+        Webkul\Velocity\Providers\VelocityServiceProvider::class,
+        Webkul\BookingProduct\Providers\BookingProductServiceProvider::class,
+        Webkul\SocialLogin\Providers\SocialLoginServiceProvider::class,
+
+        //GG packages
+        GG\Product\Providers\ProductServiceProvider::class,
     ],
 
     /*

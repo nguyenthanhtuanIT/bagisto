@@ -2,9 +2,11 @@
 <html>
     <head>
         <meta http-equiv="Cache-control" content="no-cache">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
         <style type="text/css">
             body, th, td, h5 {
+                font-family: DejaVu Sans;
                 font-size: 12px;
                 color: #000;
             }
@@ -45,7 +47,7 @@
                 padding: 5px 10px;
                 border-bottom: solid 1px #d3d3d3;
                 border-left: solid 1px #d3d3d3;
-                color: $font-color;
+                color: #3A3A3A;
                 vertical-align: middle;
             }
 
@@ -71,18 +73,66 @@
             }
 
             .label {
+                font-family: DejaVu Sans;
                 color: #000;
-                font-weight: 600;
+                font-weight: bold;
             }
 
+            .logo {
+                height: 70px;
+                width: 70px;
+            }
+
+            .merchant-details {
+                margin-bottom: 5px;
+            }
+
+            .merchant-details-title {
+                font-weight: bold;
+            }
+
+            .text-center {
+                text-align: center;
+            }
         </style>
     </head>
 
-    <body style="background-image: none;background-color: #fff;">
+    <body style="background-image: none; background-color: #fff;">
         <div class="container">
+            <div class="header">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 style="text-align: center;">{{ __('admin::app.sales.invoices.invoice') }}</h1>
+                    </div>
+                </div>
+                @if (core()->getConfigData('sales.orderSettings.invoice_slip_design.logo'))
+                    <div class="image">
+                        <img class="logo" src="{{ Storage::url(core()->getConfigData('sales.orderSettings.invoice_slip_design.logo')) }}"/>
+                    </div>
+                @endif
+                <div class="merchant-details">
+                    <div><span class="merchant-details-title">{{ core()->getConfigData('sales.shipping.origin.store_name') ? core()->getConfigData('sales.shipping.origin.store_name') : '' }}</span></div>
+                    <div>{{ core()->getConfigData('sales.shipping.origin.address1') ? core()->getConfigData('sales.shipping.origin.address1') : '' }}</div>
+                    <div>
+                        <span>{{ core()->getConfigData('sales.shipping.origin.zipcode') ? core()->getConfigData('sales.shipping.origin.zipcode') : '' }}</span>
+                        <span>{{ core()->getConfigData('sales.shipping.origin.city') ? core()->getConfigData('sales.shipping.origin.city') : '' }}</span></div>
+                    <div>{{ core()->getConfigData('sales.shipping.origin.state') ? core()->getConfigData('sales.shipping.origin.state') : '' }}</div>
+                    <div>{{ core()->getConfigData('sales.shipping.origin.country') ?  core()->country_name(core()->getConfigData('sales.shipping.origin.country')) : '' }}</div>
+                </div>
+                <div class="merchant-details">
+                    @if (core()->getConfigData('sales.shipping.origin.contact'))
+                        <div><span class="merchant-details-title">{{ __('admin::app.admin.system.contact-number') }}:</span> {{ core()->getConfigData('sales.shipping.origin.contact') }}</div>
+                    @endif
+                    @if (core()->getConfigData('sales.shipping.origin.vat_number'))
+                        <div><span class="merchant-details-title">{{ __('admin::app.admin.system.vat-number') }}:</span> {{ core()->getConfigData('sales.shipping.origin.vat_number') }}</div>
+                    @endif
+                    @if (core()->getConfigData('sales.shipping.origin.bank_details'))
+                        <div><span class="merchant-details-title">{{ __('admin::app.admin.system.bank-details') }}:</span> {{ core()->getConfigData('sales.shipping.origin.bank_details') }}</div>
+                    @endif
+                </div>
+            </div>
 
             <div class="invoice-summary">
-
                 <div class="row">
                     <span class="label">{{ __('admin::app.sales.invoices.invoice-id') }} -</span>
                     <span class="value">#{{ $invoice->id }}</span>
@@ -94,8 +144,8 @@
                 </div>
 
                 <div class="row">
-                    <span class="label">{{ __('admin::app.sales.invoices.order-date') }} -</span>
-                    <span class="value">{{ $invoice->created_at->format('M d, Y') }}</span>
+                    <span class="label">{{ __('admin::app.sales.invoices.order-date') }} </span>
+                    <span class="value">{{ $invoice->created_at->format('d-m-Y') }}</span>
                 </div>
 
                 <div class="table address">
@@ -103,28 +153,37 @@
                         <thead>
                             <tr>
                                 <th style="width: 50%">{{ __('admin::app.sales.invoices.bill-to') }}</th>
-                                <th>{{ __('admin::app.sales.invoices.ship-to') }}</th>
+                                @if ($invoice->order->shipping_address)
+                                    <th>{{ __('admin::app.sales.invoices.ship-to') }}</th>
+                                @endif
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr>
-                                <td>
-                                    <p>{{ $invoice->order->billing_address->name }}</p>
-                                    <p>{{ $invoice->order->billing_address->address1 }}</p>
-                                    <p>{{ $invoice->order->billing_address->city }}</p>
-                                    <p>{{ $invoice->order->billing_address->state }}</p>
-                                    <p>{{ core()->country_name($invoice->order->billing_address->country) }} {{ $invoice->order->billing_address->postcode }}</p>
-                                    {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->billing_address->phone }}
-                                </td>
-                                <td>
-                                    <p>{{ $invoice->order->shipping_address->name }}</p>
-                                    <p>{{ $invoice->order->shipping_address->address1 }}</p>
-                                    <p>{{ $invoice->order->shipping_address->city }}</p>
-                                    <p>{{ $invoice->order->shipping_address->state }}</p>
-                                    <p>{{ core()->country_name($invoice->order->shipping_address->country) }} {{ $invoice->order->shipping_address->postcode }}</p>
-                                    {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->shipping_address->phone }}
-                                </td>
+                                @if ($invoice->order->billing_address)
+                                    <td>
+                                        <p>{{ $invoice->order->billing_address->company_name ?? '' }}</p>
+                                        <p>{{ $invoice->order->billing_address->name }}</p>
+                                        <p>{{ $invoice->order->billing_address->address1 }}</p>
+                                        <p>{{ $invoice->order->billing_address->postcode . ' ' .$invoice->order->billing_address->city }} </p>
+                                        <p>{{ $invoice->order->billing_address->state }}</p>
+                                        <p>{{ core()->country_name($invoice->order->billing_address->country) }}</p>
+                                        {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->billing_address->phone }}
+                                    </td>
+                                @endif
+
+                                @if ($invoice->order->shipping_address)
+                                    <td>
+                                        <p>{{ $invoice->order->shipping_address->company_name ?? '' }}</p>
+                                        <p>{{ $invoice->order->shipping_address->name }}</p>
+                                        <p>{{ $invoice->order->shipping_address->address1 }}</p>
+                                        <p>{{ $invoice->order->shipping_address->postcode . ' ' . $invoice->order->shipping_address->city }}</p>
+                                        <p>{{ $invoice->order->shipping_address->state }}</p>
+                                        <p>{{ core()->country_name($invoice->order->shipping_address->country) }}</p>
+                                        {{ __('shop::app.checkout.onepage.contact') }} : {{ $invoice->order->shipping_address->phone }}
+                                    </td>
+                                @endif
                             </tr>
                         </tbody>
                     </table>
@@ -135,7 +194,10 @@
                         <thead>
                             <tr>
                                 <th style="width: 50%">{{ __('admin::app.sales.orders.payment-method') }}</th>
-                                <th>{{ __('admin::app.sales.orders.shipping-method') }}</th>
+
+                                @if ($invoice->order->shipping_address)
+                                    <th>{{ __('admin::app.sales.orders.shipping-method') }}</th>
+                                @endif
                             </tr>
                         </thead>
 
@@ -144,9 +206,12 @@
                                 <td>
                                     {{ core()->getConfigData('sales.paymentmethods.' . $invoice->order->payment->method . '.title') }}
                                 </td>
-                                <td>
-                                    {{ $invoice->order->shipping_title }}
-                                </td>
+
+                                @if ($invoice->order->shipping_address)
+                                    <td>
+                                        {{ $invoice->order->shipping_title }}
+                                    </td>
+                                @endif
                             </tr>
                         </tbody>
                     </table>
@@ -158,11 +223,11 @@
                             <tr>
                                 <th>{{ __('admin::app.sales.orders.SKU') }}</th>
                                 <th>{{ __('admin::app.sales.orders.product-name') }}</th>
-                                <th>{{ __('admin::app.sales.orders.price') }}</th>
-                                <th>{{ __('admin::app.sales.orders.qty') }}</th>
-                                <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
-                                <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
-                                <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
+                                <th class="text-center">{{ __('admin::app.sales.orders.price') }}</th>
+                                <th class="text-center">{{ __('admin::app.sales.orders.qty') }}</th>
+                                <th class="text-center">{{ __('admin::app.sales.orders.subtotal') }}</th>
+                                <th class="text-center">{{ __('admin::app.sales.orders.tax-amount') }}</th>
+                                <th class="text-center">{{ __('admin::app.sales.orders.grand-total') }}</th>
                             </tr>
                         </thead>
 
@@ -170,19 +235,25 @@
 
                             @foreach ($invoice->items as $item)
                                 <tr>
-                                    <td>{{ $item->child ? $item->child->sku : $item->sku }}</td>
+                                    <td>{{ $item->getTypeInstance()->getOrderedItem($item)->sku }}</td>
                                     <td>
                                         {{ $item->name }}
 
-                                        @if ($html = $item->getOptionDetailHtml())
-                                            <p>{{ $html }}</p>
+                                        @if (isset($item->additional['attributes']))
+                                            <div class="item-options">
+
+                                                @foreach ($item->additional['attributes'] as $attribute)
+                                                    <b>{{ $attribute['attribute_name'] }} : </b>{{ $attribute['option_label'] }}</br>
+                                                @endforeach
+
+                                            </div>
                                         @endif
                                     </td>
                                     <td>{{ core()->formatBasePrice($item->base_price) }}</td>
-                                    <td>{{ $item->qty }}</td>
-                                    <td>{{ core()->formatBasePrice($item->base_total) }}</td>
-                                    <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
-                                    <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
+                                    <td class="text-center">{{ $item->qty }}</td>
+                                    <td class="text-center">{{ core()->formatBasePrice($item->base_total) }}</td>
+                                    <td class="text-center">{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
+                                    <td class="text-center">{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
                                 </tr>
                             @endforeach
 

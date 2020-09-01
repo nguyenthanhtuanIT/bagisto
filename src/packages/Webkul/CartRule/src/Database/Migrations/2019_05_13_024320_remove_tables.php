@@ -27,6 +27,8 @@ class RemoveTables extends Migration
 
         Schema::dropIfExists('cart_rule_coupon_usage');
 
+        Schema::dropIfExists('cart_rule_coupons_usage');
+
         Schema::dropIfExists('cart_rules');
     }
 

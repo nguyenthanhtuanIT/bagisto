@@ -35,6 +35,10 @@
                 </div>
 
                 <div>
+                    {{ $order->shipping_address->company_name ?? '' }}
+                </div>
+
+                <div>
                     {{ $order->shipping_address->name }}
                 </div>
 
@@ -64,6 +68,10 @@
             <div style="line-height: 25px;">
                 <div style="font-weight: bold;font-size: 16px;color: #242424;">
                     {{ __('shop::app.mail.order.cancel.billing-address') }}
+                </div>
+
+                <div>
+                    {{ $order->billing_address->company_name ?? '' }}
                 </div>
 
                 <div>
@@ -110,22 +118,31 @@
                     <tbody>
                     @foreach ($order->items as $item)
                         <tr>
-                            <td data-value="{{ __('shop::app.customer.account.order.view.SKU') }}" style="text-align: left;padding: 8px">{{ $item->child ? $item->child->sku : $item->sku }}</td>
-
-                            <td data-value="{{ __('shop::app.customer.account.order.view.product-name') }}" style="text-align: left;padding: 8px">{{ $item->name }}</td>
-
-                            <td data-value="{{ __('shop::app.customer.account.order.view.price') }}" style="text-align: left;padding: 8px">{{ core()->formatPrice($item->price, $order->order_currency_code) }}
+                            <td data-value="{{ __('shop::app.customer.account.order.view.SKU') }}" style="text-align: left;padding: 8px">
+                                {{ $item->child ? $item->child->sku : $item->sku }}
                             </td>
 
-                            <td data-value="{{ __('shop::app.customer.account.order.view.qty') }}" style="text-align: left;padding: 8px">{{ $item->qty_canceled }}</td>
+                            <td data-value="{{ __('shop::app.customer.account.order.view.product-name') }}" style="text-align: left;padding: 8px">
+                                {{ $item->name }}
 
-                            @if ($html = $item->getOptionDetailHtml())
-                                <div style="">
-                                    <label style="margin-top: 10px; font-size: 16px;color: #5E5E5E; display: block;">
-                                        {{ $html }}
-                                    </label>
-                                </div>
-                            @endif
+                                @if (isset($item->additional['attributes']))
+                                    <div class="item-options">
+
+                                        @foreach ($item->additional['attributes'] as $attribute)
+                                            <b>{{ $attribute['attribute_name'] }} : </b>{{ $attribute['option_label'] }}</br>
+                                        @endforeach
+
+                                    </div>
+                                @endif
+                            </td>
+
+                            <td data-value="{{ __('shop::app.customer.account.order.view.price') }}" style="text-align: left;padding: 8px">
+                                {{ core()->formatPrice($item->price, $order->order_currency_code) }}
+                            </td>
+
+                            <td data-value="{{ __('shop::app.customer.account.order.view.qty') }}" style="text-align: left;padding: 8px">
+                                {{ $item->qty_canceled }}
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -148,12 +165,14 @@
                 </span>
             </div>
 
-            <div>
-                <span>{{ __('shop::app.mail.order.cancel.tax') }}</span>
-                <span style="float: right;">
-                    {{ core()->formatPrice($order->tax_amount, $order->order_currency_code) }}
+            @foreach (Webkul\Tax\Helpers\Tax::getTaxRatesWithAmount($order, false) as $taxRate => $taxAmount )
+                <div>
+                    <span id="taxrate-{{ core()->taxRateAsIdentifier($taxRate) }}">{{ __('shop::app.mail.order.cancel.tax') }} {{ $taxRate }} %</span>
+                    <span id="taxamount-{{ core()->taxRateAsIdentifier($taxRate) }}" style="float: right;">
+                    {{ core()->formatPrice($taxAmount, $order->order_currency_code) }}
                 </span>
-            </div>
+                </div>
+            @endforeach
 
             @if ($order->discount_amount > 0)
                 <div>

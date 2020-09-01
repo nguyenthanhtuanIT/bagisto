@@ -1,3 +1,8 @@
+<?php
+/** @var array $selectedOptionIds */
+/** @var \Webkul\CartRule\Models\CartRule $cartRule */
+?>
+
 @extends('admin::layouts.content')
 
 @section('page_title')
@@ -21,7 +26,8 @@
                 <div class="page-header">
                     <div class="page-title">
                         <h1>
-                            <i class="icon angle-left-icon back-link" @click="redirectBack('{{ url('/admin/dashboard') }}')"></i>
+                            <i class="icon angle-left-icon back-link"
+                            onclick="history.length > 1 ? history.go(-1) : window.location = '{{ route('admin.dashboard.index') }}';"></i>
 
                             {{ __('admin::app.promotions.cart-rules.edit-title') }}
                         </h1>
@@ -56,11 +62,11 @@
 
                                 <div class="control-group">
                                     <label for="status">{{ __('admin::app.promotions.cart-rules.status') }}</label>
-                                    <span class="checkbox">
+
+                                    <label class="switch">
                                         <input type="checkbox" id="status" name="status" value="{{ $cartRule->status }}" {{ $cartRule->status ? 'checked' : '' }}>
-                                        <label class="checkbox-view" for="status"></label>
-                                        {{ __('admin::app.promotions.cart-rules.is-active') }}
-                                    </span>
+                                        <span class="slider round"></span>
+                                    </label>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('channels[]') ? 'has-error' : '']">
@@ -144,16 +150,16 @@
 
                                 <div class="control-group date">
                                     <label for="starts_from">{{ __('admin::app.promotions.cart-rules.from') }}</label>
-                                    <date>
+                                    <datetime>
                                         <input type="text" name="starts_from" class="control" value="{{ old('starts_from') ?: $cartRule->starts_from }}"/>
-                                    </date>
+                                    </datetime>
                                 </div>
 
                                 <div class="control-group date">
                                     <label for="ends_till">{{ __('admin::app.promotions.cart-rules.to') }}</label>
-                                    <date>
+                                    <datetime>
                                         <input type="text" name="ends_till" class="control" value="{{ old('ends_till') ?: $cartRule->ends_till }}"/>
-                                    </date>
+                                    </datetime>
                                 </div>
 
                                 <div class="control-group">
@@ -243,7 +249,7 @@
 
                                 <div class="control-group">
                                     <label for="apply_to_shipping">{{ __('admin::app.promotions.cart-rules.apply-to-shipping') }}</label>
-                                    
+
                                     <?php $selectedOption = old('apply_to_shipping') ?: $cartRule->apply_to_shipping ?>
 
                                     <select class="control" id="apply_to_shipping" name="apply_to_shipping" :disabled="action_type == 'cart_fixed'">
@@ -403,7 +409,7 @@
 
                 <div class="control-group" :class="[errors.has('create-coupun-form.coupon_qty') ? 'has-error' : '']">
                     <label for="coupon_qty" class="required">{{ __('admin::app.promotions.cart-rules.coupon-qty') }}</label>
-                    
+
                     <input v-validate="'required|min_value:1'" class="control" id="coupon_qty" name="coupon_qty" v-model="coupon_format.coupon_qty" data-vv-as="&quot;{{ __('admin::app.promotions.cart-rules.coupon-qty') }}&quot;"/>
 
                     <span class="control-error" v-if="errors.has('create-coupun-form.coupon_qty')">
@@ -515,11 +521,11 @@
 
                     attribute_type_indexes: {
                         'cart': 0,
-                        
+
                         'cart_item': 1,
 
                         'product': 2
-                    }, 
+                    },
 
                     condition_operators: {
                         'price': [{
@@ -535,10 +541,10 @@
                                 'operator': '<=',
                                 'label': '{{ __('admin::app.promotions.cart-rules.equals-or-less-than') }}'
                             }, {
-                                'operator': '<=',
+                                'operator': '>',
                                 'label': '{{ __('admin::app.promotions.cart-rules.greater-than') }}'
                             }, {
-                                'operator': '<=',
+                                'operator': '<',
                                 'label': '{{ __('admin::app.promotions.cart-rules.less-than') }}'
                             }],
                         'decimal': [{
@@ -685,7 +691,9 @@
                     if (matchedAttribute[0]['type'] == 'multiselect' || matchedAttribute[0]['type'] == 'checkbox') {
                         this.condition.operator = '{}';
 
-                        this.condition.value = this.condition.value == '' && this.condition.value != undefined ? [] : this.condition.value;
+                        this.condition.value = this.condition.value == '' && this.condition.value != undefined
+                                ? []
+                                : Array.isArray(this.condition.value) ? this.condition.value : [];
                     }
 
                     return matchedAttribute[0];

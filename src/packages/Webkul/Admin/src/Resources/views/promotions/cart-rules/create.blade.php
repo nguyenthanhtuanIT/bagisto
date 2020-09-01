@@ -21,7 +21,8 @@
                 <div class="page-header">
                     <div class="page-title">
                         <h1>
-                            <i class="icon angle-left-icon back-link" @click="redirectBack('{{ url('/admin/dashboard') }}')"></i>
+                            <i class="icon angle-left-icon back-link"
+                            onclick="history.length > 1 ? history.go(-1) : window.location = '{{ route('admin.dashboard.index') }}';"></i>
 
                             {{ __('admin::app.promotions.cart-rules.add-title') }}
                         </h1>
@@ -56,11 +57,11 @@
 
                                 <div class="control-group">
                                     <label for="status">{{ __('admin::app.promotions.cart-rules.status') }}</label>
-                                    <span class="checkbox">
-                                        <input type="checkbox" id="status" name="status" value="1">
-                                        <label class="checkbox-view" for="status"></label>
-                                        {{ __('admin::app.promotions.cart-rules.is-active') }}
-                                    </span>
+
+                                    <label class="switch">
+                                        <input type="checkbox" id="status" name="status" value="1" {{ old('status') ? 'checked' : '' }}>
+                                        <span class="slider round"></span>
+                                    </label>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('channels[]') ? 'has-error' : '']">
@@ -140,16 +141,16 @@
 
                                 <div class="control-group date">
                                     <label for="starts_from">{{ __('admin::app.promotions.cart-rules.from') }}</label>
-                                    <date>
+                                    <datetime>
                                         <input type="text" name="starts_from" class="control" value="{{ old('starts_from') }}"/>
-                                    </date>
+                                    </datetime>
                                 </div>
 
                                 <div class="control-group date">
                                     <label for="ends_till">{{ __('admin::app.promotions.cart-rules.to') }}</label>
-                                    <date>
+                                    <datetime>
                                         <input type="text" name="ends_till" class="control" value="{{ old('ends_till') }}"/>
-                                    </date>
+                                    </datetime>
                                 </div>
 
                                 <div class="control-group">
@@ -427,11 +428,11 @@
 
                     attribute_type_indexes: {
                         'cart': 0,
-                        
+
                         'cart_item': 1,
 
                         'product': 2
-                    }, 
+                    },
 
                     condition_operators: {
                         'price': [{
@@ -447,10 +448,10 @@
                                 'operator': '<=',
                                 'label': '{{ __('admin::app.promotions.cart-rules.equals-or-less-than') }}'
                             }, {
-                                'operator': '<=',
+                                'operator': '>',
                                 'label': '{{ __('admin::app.promotions.cart-rules.greater-than') }}'
                             }, {
-                                'operator': '<=',
+                                'operator': '<',
                                 'label': '{{ __('admin::app.promotions.cart-rules.less-than') }}'
                             }],
                         'decimal': [{

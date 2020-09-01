@@ -2,20 +2,7 @@
 
 #### This changelog consists the bug & security fixes and new features being included in the releases listed below.
 
-## **v0.2.2 (3rd of January, 2020)** - *Release*
-
-* Catalog rule product price issue fixed 
-* Changed copyright text in footer
-
-
-## **v0.2.1 (23th of December, 2019)** - *Release*
-
-* Version updated in .env file
-
-
-
 ## **v0.2.0 (23th of December, 2019)** - *Release*
-
 
 * #1955 [fixed] - Message need to be changed on mouse hover on cross symbol next to applied coupon.
 

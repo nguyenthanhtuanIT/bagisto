@@ -6,13 +6,20 @@
 
 @section('content')
     <div class="content">
+        <?php $locale = request()->get('locale') ?: app()->getLocale(); ?>
+
         <form method="POST" action="{{ route('admin.sliders.update', $slider->id) }}" @submit.prevent="onSubmit" enctype="multipart/form-data">
             <div class="page-header">
                 <div class="page-title">
                     <h1>
-                        <i class="icon angle-left-icon back-link" onclick="history.length > 1 ? history.go(-1) : window.location = '{{ url('/admin/dashboard') }}';"></i>
+                        <i class="icon angle-left-icon back-link" onclick="history.length > 1 ? history.go(-1) : window.location = '{{ route('admin.dashboard.index') }}';"></i>
 
                         {{ __('admin::app.settings.sliders.edit-title') }}
+
+                        @if ($slider->locale)
+                            <span class="locale">[{{ $slider->locale }}]</span>
+                        @endif
+
                     </h1>
                 </div>
 
@@ -31,8 +38,8 @@
                     {!! view_render_event('bagisto.admin.settings.slider.edit.before') !!}
 
                     <div class="control-group" :class="[errors.has('title') ? 'has-error' : '']">
-                        <label for="title" class="required">{{ __('admin::app.settings.sliders.title') }}</label>
-                        <input type="text" class="control" name="title" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.settings.sliders.title') }}&quot;" value="{{ $slider->title ?: old('title') }}">
+                        <label for="title" class="required">{{ __('admin::app.settings.sliders.name') }}</label>
+                        <input type="text" class="control" name="title" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.settings.sliders.name') }}&quot;" value="{{ $slider->title ?: old('title') }}">
                         <span class="control-error" v-if="errors.has('title')">@{{ errors.first('title') }}</span>
                     </div>
 
@@ -52,7 +59,7 @@
                     <div class="control-group {!! $errors->has('image.*') ? 'has-error' : '' !!}">
                         <label class="required">{{ __('admin::app.catalog.categories.image') }}</label>
 
-                        <image-wrapper :button-label="'{{ __('admin::app.settings.sliders.image') }}'" input-name="image" :multiple="false" :images='"{{ url('storage/'.$slider->path) }}"' ></image-wrapper>
+                        <image-wrapper :button-label="'{{ __('admin::app.settings.sliders.image') }}'" input-name="image" :multiple="false" :images='"{{ Storage::url($slider->path) }}"'></image-wrapper>
 
                         <span class="control-error" v-if="{!! $errors->has('image.*') !!}">
                             @foreach ($errors->get('image.*') as $key => $message)
@@ -87,8 +94,8 @@
                 selector: 'textarea#tiny',
                 height: 200,
                 width: "100%",
-                plugins: 'image imagetools media wordcount save fullscreen code',
-                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | code',
+                plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | code | table',
                 image_advtab: true,
                 templates: [
                     { title: 'Test template 1', content: 'Test 1' },

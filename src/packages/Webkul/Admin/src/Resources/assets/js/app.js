@@ -1,9 +1,20 @@
-require("./bootstrap");
+import Vue from 'vue';
+import VeeValidate, { Validator } from 'vee-validate';
+import de from 'vee-validate/dist/locale/de';
+import ar from 'vee-validate/dist/locale/ar';
 
-window.Vue = require("vue");
-window.VeeValidate = require("vee-validate");
+import './bootstrap';
 
-Vue.use(VeeValidate);
+window.Vue = Vue;
+window.VeeValidate = VeeValidate;
+
+Vue.use(VeeValidate, {
+    dictionary: {
+        ar: ar,
+        de: de,
+    },
+    events: 'input|change|blur',
+});
 Vue.prototype.$http = axios
 
 window.eventBus = new Vue();
@@ -25,6 +36,8 @@ $(document).ready(function () {
         mounted() {
             this.addServerErrors();
             this.addFlashMessages();
+
+            this.$validator.localize(document.documentElement.lang);
         },
 
         methods: {
@@ -39,6 +52,8 @@ $(document).ready(function () {
                         e.target.submit();
                     } else {
                         this.toggleButtonDisable(false);
+
+                        eventBus.$emit('onFormError')
                     }
                 });
             },
@@ -80,6 +95,10 @@ $(document).ready(function () {
             },
 
             addFlashMessages() {
+                if (typeof flashMessages == 'undefined') {
+                    return;
+                };
+
                 const flashes = this.$refs.flashes;
 
                 flashMessages.forEach(function(flash) {
@@ -89,10 +108,6 @@ $(document).ready(function () {
 
             showModal(id) {
                 this.$set(this.modalIds, id, true);
-            },
-
-            redirectBack(fallbackUrl) {
-                history.length > 1 ? history.go(-1) : window.location = fallbackUrl;
             }
         }
     });

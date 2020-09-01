@@ -3,7 +3,17 @@
 @auth('customer')
     {!! view_render_event('bagisto.shop.products.wishlist.before') !!}
 
-    <a @if ($wishListHelper->getWishlistProduct($product)) class="add-to-wishlist already" @else class="add-to-wishlist" @endif href="{{ route('customer.wishlist.add', $product->product_id) }}" id="wishlist-changer">
+    <a
+        @if ($wishListHelper->getWishlistProduct($product))
+            class="add-to-wishlist already"
+            title="{{ __('shop::app.customer.account.wishlist.remove-wishlist-text') }}"
+        @else
+            class="add-to-wishlist"
+            title="{{ __('shop::app.customer.account.wishlist.add-wishlist-text') }}"
+        @endif
+        id="wishlist-changer"
+        style="margin-right: 15px;"
+        href="{{ route('customer.wishlist.add', $product->product_id) }}">
         <span class="icon wishlist-icon"></span>
     </a>
 
