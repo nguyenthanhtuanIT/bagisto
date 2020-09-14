@@ -319,14 +319,6 @@ return [
             'invoice-btn-title' => 'Factuur',
             'info' => 'Informatie',
             'invoices' => 'Facturen',
-            'invoices-change-title' => 'Change invoice state',
-            'invoices-change-state-desc' => 'Please select the new invoice state:',
-            'invoice-status-paid'    => 'Paid',
-            'invoice-status-pending' => 'Pending',
-            'invoice-status-overdue' => 'Overdue',
-            'invoice-status-update' => 'Save changes',
-            'invoice-status-confirmed' => 'The invoice state has been changed.',
-            'invoice-status-error' => 'Could not update the invoice state. ',
             'shipments' => 'Verzendingen',
             'order-and-account' => 'Order and Account',
             'order-info' => 'Order Information',
@@ -1358,7 +1350,12 @@ return [
             'store-name' => 'Winkel naam',
             'vat-number' => 'Btw-nummer',
             'contact-number' => 'Contact nummer',
-            'bank-details' => 'Bankgegevens'
+            'bank-details' => 'Bankgegevens',
+            'mailing-address' => 'Send Check to',
+            'instructions' => 'Instructions',
+            'custom-scripts' => 'Custom Scripts',
+            'custom-css' => 'Custom CSS',
+            'custom-javascript' => 'Custom Javascript'
         ]
     ]
 ];

@@ -320,14 +320,6 @@ return [
             'invoice-btn-title' => 'Invoice',
             'info' => 'Information',
             'invoices' => 'Invoices',
-            'invoices-change-title' => 'Change invoice state',
-            'invoices-change-state-desc' => 'Please select the new invoice state:',
-            'invoice-status-paid'    => 'Paid',
-            'invoice-status-pending' => 'Pending',
-            'invoice-status-overdue' => 'Overdue',
-            'invoice-status-update' => 'Save changes',
-            'invoice-status-confirmed' => 'The invoice state has been changed.',
-            'invoice-status-error' => 'Could not update the invoice state. ',
             'shipments' => 'Shipments',
             'order-and-account' => 'Order and Account',
             'order-info' => 'Order Information',
@@ -1362,7 +1354,12 @@ return [
             'store-name' => 'Store Name',
             'vat-number' => 'Vat Number',
             'contact-number' => 'Contact Number',
-            'bank-details' => 'Bank Details'
+            'bank-details' => 'Bank Details',
+            'mailing-address' => 'Send Check to',
+            'instructions' => 'Instructions',
+            'custom-scripts' => 'Custom Scripts',
+            'custom-css' => 'Custom CSS',
+            'custom-javascript' => 'Custom Javascript'
        ]
     ]
 ];

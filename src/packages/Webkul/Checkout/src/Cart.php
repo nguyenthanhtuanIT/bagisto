@@ -172,7 +172,7 @@ class Cart
                             'cart_id' => $cart->id
                         ]));
                     } else {
-                        // if ($cartItem->product->getTypeInstance()->showQuantityBox() === false) {
+                        // if ($cartItem->product->getTypeInstance()->isMultipleQtyAllowed() === false) {
                         //     return ['warning' => __('shop::app.checkout.cart.integrity.qty_impossible')];
                         // }
 
@@ -293,7 +293,6 @@ class Cart
     public function getItemByProduct($data)
     {
         $items = $this->getCart()->all_items;
-
         foreach ($items as $item) {
             if ($item->product->getTypeInstance()->compareOptions($item->additional, $data['additional'])) {
                 if (isset($data['additional']['parent_id'])) {

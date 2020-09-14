@@ -74,11 +74,11 @@ class ProductDataGrid extends DataGrid
                 DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
             );
 
-        $queryBuilder->groupBy('product_flat.product_id', 'product_flat.locale', 'product_flat.channel');
+        $queryBuilder->groupBy('product_flat.product_id', 'product_flat.channel');
 
         $queryBuilder->whereIn('product_flat.locale', $whereInLocales);
         $queryBuilder->whereIn('product_flat.channel', $whereInChannels);
-        $queryBuilder->whereNotNull('product_flat.name');
+        // $queryBuilder->whereNotNull('product_flat.name');
 
         $this->addFilter('product_id', 'product_flat.product_id');
         $this->addFilter('product_name', 'product_flat.name');
@@ -206,7 +206,7 @@ class ProductDataGrid extends DataGrid
             'title'  => trans('admin::app.datagrid.copy'),
             'method' => 'GET',
             'route'  => 'admin.catalog.products.copy',
-            'icon'   => 'icon note-icon',
+            'icon'   => 'icon copy-icon',
         ]);
 
         $this->addMassAction([
