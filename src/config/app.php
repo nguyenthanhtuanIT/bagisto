@@ -282,6 +282,10 @@ return [
         Webkul\Velocity\Providers\VelocityServiceProvider::class,
         Webkul\BookingProduct\Providers\BookingProductServiceProvider::class,
         Webkul\SocialLogin\Providers\SocialLoginServiceProvider::class,
+
+        // proiduct package
+        GG\Admin\Providers\AdminServiceProvider::class,
+
     ],
 
     /*
